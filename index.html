@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แอปสอนอัลกุรอาน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap');
+        
+        .thai-font { font-family: 'Noto Sans Thai', sans-serif; }
+        .arabic-font { font-family: 'Amiri', serif; }
+        
+        .surah-card {
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .surah-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .verse-line {
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .verse-line:hover {
+            border-left-color: #fbbf24;
+            background-color: rgba(251, 191, 36, 0.1);
+        }
+        
+        .floating-animation {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .audio-modal {
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen thai-font">
+    <!-- Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="text-4xl floating-animation">📖</div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-indigo-800">แอปสอนอัลกุรอาน</h1>
+                        <p class="text-indigo-600 text-sm">เรียนรู้ซูเราะห์สำคัญ</p>
+                    </div>
+                </div>
+                
+                <nav class="flex space-x-6">
+                    <button onclick="showPage('learn')" id="learnBtn" class="nav-btn bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors">
+                        📚 เรียนรู้
+                    </button>
+                    <button onclick="showPage('game')" id="gameBtn" class="nav-btn bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+                        🎮 เกม
+                    </button>
+                </nav>
+                
+                <div class="text-4xl floating-animation">🕌</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Audio Modal -->
+    <div id="audioModal" class="fixed inset-0 bg-black bg-opacity-50 audio-modal hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
+            <div class="text-center">
+                <div class="text-6xl mb-4">🎵</div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-800">แหล่งเสียงอัลกุรอาน</h3>
+                <div class="space-y-3 mb-6">
+                    <a href="https://quran.com" target="_blank" class="block bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-medium transition-colors">
+                        🌐 Quran.com - เสียงหลายนักอ่าน
+                    </a>
+                    <a href="https://www.islamicfinder.org/quran/" target="_blank" class="block bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg font-medium transition-colors">
+                        📱 Islamic Finder
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=quran+recitation" target="_blank" class="block bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-lg font-medium transition-colors">
+                        📺 YouTube - การอ่านอัลกุรอาน
+                    </a>
+                </div>
+                <button onclick="closeAudioModal()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                    ปิด
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        <!-- Learning Page -->
+        <div id="learnPage" class="page-content">
+        <!-- Introduction Section -->
+        <section class="text-center mb-16 fade-in">
+            <h2 class="text-5xl font-bold text-gray-800 mb-6">เรียนรู้อัลกุรอาน</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                ศึกษาซูเราะห์สำคัญในอัลกุรอาน พร้อมความหมายและคำแปลภาษาไทย 
+                เพื่อความเข้าใจที่ลึกซึ้งและการปฏิบัติที่ถูกต้อง
+            </p>
+        </section>
+
+        <!-- Surahs Grid -->
+        <section class="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <!-- Al-Fatihah -->
+            <div class="surah-card rounded-2xl p-8 text-white shadow-xl fade-in">
+                <div class="text-center mb-8">
+                    <div class="text-6xl mb-4">🕌</div>
+                    <h3 class="text-3xl font-bold mb-2">ซูเราะห์ อัล-ฟาตีฮะห์</h3>
+                    <p class="text-blue-100 text-lg">บทเปิด • 7 อายะห์</p>
+                    <div class="w-24 h-1 bg-white/30 mx-auto mt-4 rounded-full"></div>
+                    
+                    <!-- Audio Controls -->
+                    <div class="mt-6 bg-white/10 rounded-xl p-4 backdrop-blur-sm">
+                        <h4 class="text-lg font-semibold mb-3 text-yellow-200">🎵 ฟังการอ่าน</h4>
+                        <div class="flex flex-wrap justify-center gap-3">
+                            <button onclick="playAudio('audio/fatihah.mp3.mp3')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                🔊 เล่นเสียง
+                            </button>
+                            <a href="https://quran.com/1" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                🌐 Quran.com
+                            </a>
+                            <button onclick="showAudioModal()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                📱 แหล่งเสียงอื่น
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 1</div>
+                        <div class="text-white">ด้วยพระนามของอัลลอฮ์ ผู้ทรงเมตตา ผู้ทรงกรุณา</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 2</div>
+                        <div class="text-white">การสรรเสริญทั้งปวงเป็นของอัลลอฮ์ ผู้เป็นพระเจ้าแห่งสากลโลก</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            الرَّحْمَٰنِ الرَّحِيمِ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 3</div>
+                        <div class="text-white">ผู้ทรงเมตตา ผู้ทรงกรุณา</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            مَالِكِ يَوْمِ الدِّينِ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 4</div>
+                        <div class="text-white">ผู้ทรงเป็นเจ้าแห่งวันพิพากษา</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 5</div>
+                        <div class="text-white">พระองค์เท่านั้นที่เราเคารพบูชา และพระองค์เท่านั้นที่เราขอความช่วยเหลือ</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 6</div>
+                        <div class="text-white">ขอทรงนำเราไปสู่ทางที่ถูกต้อง</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 7</div>
+                        <div class="text-white">ทางของผู้ที่พระองค์ทรงประทานพรแก่เขา ไม่ใช่ทางของผู้ที่ถูกพระพิโรธ และไม่ใช่ทางของผู้หลงผิด</div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-6 bg-white/10 rounded-xl backdrop-blur-sm">
+                    <h4 class="text-xl font-semibold mb-3 text-yellow-200">💡 ความสำคัญ</h4>
+                    <p class="text-blue-100 leading-relaxed">
+                        ซูเราะห์อัล-ฟาตีฮะห์เป็นบทเปิดของอัลกุรอาน เรียกว่า "อุมมุล กิตาบ" (มารดาแห่งคัมภีร์) 
+                        เป็นซูเราะห์ที่สำคัญที่สุดและต้องอ่านในการละหมาดทุกรอกอะห์
+                    </p>
+                </div>
+            </div>
+
+            <!-- Al-Ikhlas -->
+            <div class="surah-card rounded-2xl p-8 text-white shadow-xl fade-in">
+                <div class="text-center mb-8">
+                    <div class="text-6xl mb-4">✨</div>
+                    <h3 class="text-3xl font-bold mb-2">ซูเราะห์ อัล-อิคลาศ</h3>
+                    <p class="text-blue-100 text-lg">ความบริสุทธิ์ • 4 อายะห์</p>
+                    <div class="w-24 h-1 bg-white/30 mx-auto mt-4 rounded-full"></div>
+                    
+                    <!-- Audio Controls -->
+                    <div class="mt-6 bg-white/10 rounded-xl p-4 backdrop-blur-sm">
+                        <h4 class="text-lg font-semibold mb-3 text-yellow-200">🎵 ฟังการอ่าน</h4>
+                        <div class="flex flex-wrap justify-center gap-3">
+                            <button onclick="playAudio('https://server8.mp3quran.net/ahmad_nu/112.mp3')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                🔊 เล่นเสียง
+                            </button>
+                            <a href="https://quran.com/112" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                🌐 Quran.com
+                            </a>
+                            <button onclick="showAudioModal()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                📱 แหล่งเสียงอื่น
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            قُلْ هُوَ اللَّهُ أَحَدٌ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 1</div>
+                        <div class="text-white">จงกล่าวเถิด พระองค์คืออัลลอฮ์ ผู้ทรงเป็นหนึ่งเดียว</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            اللَّهُ الصَّمَدُ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 2</div>
+                        <div class="text-white">อัลลอฮ์ ผู้ทรงเป็นที่พึ่งพิงของทุกสิ่ง</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            لَمْ يَلِدْ وَلَمْ يُولَدْ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 3</div>
+                        <div class="text-white">พระองค์ไม่ได้ให้กำเนิดและไม่ได้เกิดมา</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 4</div>
+                        <div class="text-white">และไม่มีผู้ใดเป็นเทียบเท่ากับพระองค์</div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-6 bg-white/10 rounded-xl backdrop-blur-sm">
+                    <h4 class="text-xl font-semibold mb-3 text-yellow-200">💡 ความสำคัญ</h4>
+                    <p class="text-blue-100 leading-relaxed">
+                        ซูเราะห์นี้กล่าวถึงความเป็นหนึ่งเดียวของอัลลอฮ์ (เตาฮีด) 
+                        ซึ่งเป็นหลักการสำคัญที่สุดในอิสลาม การอ่าน 1 ครั้งเท่ากับอ่านอัลกุรอาน 1 ใน 3
+                    </p>
+                </div>
+            </div>
+
+            <!-- Al-Falaq -->
+            <div class="surah-card rounded-2xl p-8 text-white shadow-xl fade-in">
+                <div class="text-center mb-8">
+                    <div class="text-6xl mb-4">🌅</div>
+                    <h3 class="text-3xl font-bold mb-2">ซูเราะห์ อัล-ฟะลัก</h3>
+                    <p class="text-blue-100 text-lg">รุ่งอรุณ • 5 อายะห์</p>
+                    <div class="w-24 h-1 bg-white/30 mx-auto mt-4 rounded-full"></div>
+                    
+                    <!-- Audio Controls -->
+                    <div class="mt-6 bg-white/10 rounded-xl p-4 backdrop-blur-sm">
+                        <h4 class="text-lg font-semibold mb-3 text-yellow-200">🎵 ฟังการอ่าน</h4>
+                        <div class="flex flex-wrap justify-center gap-3">
+                            <button onclick="playAudio('https://server8.mp3quran.net/ahmad_nu/113.mp3')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                🔊 เล่นเสียง
+                            </button>
+                            <a href="https://quran.com/113" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                🌐 Quran.com
+                            </a>
+                            <button onclick="showAudioModal()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                📱 แหล่งเสียงอื่น
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 1</div>
+                        <div class="text-white">จงกล่าวเถิด ข้าขอความคุ้มครองจากพระเจ้าแห่งรุ่งอรุณ</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            مِن شَرِّ مَا خَلَقَ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 2</div>
+                        <div class="text-white">จากความชั่วร้ายของสิ่งที่พระองค์ทรงสร้าง</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 3</div>
+                        <div class="text-white">และจากความชั่วร้ายของความมืดมิดเมื่อมันปกคลุม</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 4</div>
+                        <div class="text-white">และจากความชั่วร้ายของผู้หญิงที่เป่าลมใส่ปม</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 5</div>
+                        <div class="text-white">และจากความชั่วร้ายของผู้อิจฉาเมื่อเขาอิจฉา</div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-6 bg-white/10 rounded-xl backdrop-blur-sm">
+                    <h4 class="text-xl font-semibold mb-3 text-yellow-200">💡 ความสำคัญ</h4>
+                    <p class="text-blue-100 leading-relaxed">
+                        เป็นซูเราะห์แห่งการขอความคุ้มครอง จากความชั่วร้ายต่างๆ 
+                        รวมถึงเวทมนตร์และความอิจฉา อ่านเพื่อขอความปลอดภัย
+                    </p>
+                </div>
+            </div>
+
+            <!-- Al-Kafirun -->
+            <div class="surah-card rounded-2xl p-8 text-white shadow-xl fade-in">
+                <div class="text-center mb-8">
+                    <div class="text-6xl mb-4">🚫</div>
+                    <h3 class="text-3xl font-bold mb-2">ซูเราะห์ อัล-กะเฟิรูน</h3>
+                    <p class="text-blue-100 text-lg">ผู้ปฏิเสธศรัทธา • 6 อายะห์</p>
+                    <div class="w-24 h-1 bg-white/30 mx-auto mt-4 rounded-full"></div>
+                    
+                    <!-- Audio Controls -->
+                    <div class="mt-6 bg-white/10 rounded-xl p-4 backdrop-blur-sm">
+                        <h4 class="text-lg font-semibold mb-3 text-yellow-200">🎵 ฟังการอ่าน</h4>
+                        <div class="flex flex-wrap justify-center gap-3">
+                            <button onclick="playAudio('https://server8.mp3quran.net/ahmad_nu/109.mp3')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                🔊 เล่นเสียง
+                            </button>
+                            <a href="https://quran.com/109" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                🌐 Quran.com
+                            </a>
+                            <button onclick="showAudioModal()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                📱 แหล่งเสียงอื่น
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            قُلْ يَا أَيُّهَا الْكَافِرُونَ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 1</div>
+                        <div class="text-white">จงกล่าวเถิด โอ้บรรดาผู้ปฏิเสธศรัทธา</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            لَا أَعْبُدُ مَا تَعْبُدُونَ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 2</div>
+                        <div class="text-white">ข้าไม่เคารพบูชาสิ่งที่พวกเจ้าเคารพบูชา</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 3</div>
+                        <div class="text-white">และพวกเจ้าก็ไม่เคารพบูชาสิ่งที่ข้าเคารพบูชา</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            وَلَا أَنَا عَابِدٌ مَّا عَبَدتُّمْ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 4</div>
+                        <div class="text-white">และข้าก็ไม่เคารพบูชาสิ่งที่พวกเจ้าได้เคารพบูชา</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 5</div>
+                        <div class="text-white">และพวกเจ้าก็ไม่เคารพบูชาสิ่งที่ข้าเคารพบูชา</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            لَكُمْ دِينُكُمْ وَلِيَ دِينِ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 6</div>
+                        <div class="text-white">สำหรับพวกเจ้ามีศาสนาของพวกเจ้า และสำหรับข้ามีศาสนาของข้า</div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-6 bg-white/10 rounded-xl backdrop-blur-sm">
+                    <h4 class="text-xl font-semibold mb-3 text-yellow-200">💡 ความสำคัญ</h4>
+                    <p class="text-blue-100 leading-relaxed">
+                        ซูเราะห์นี้แสดงถึงความแตกต่างที่ชัดเจนระหว่างศรัทธาในอิสลามกับความเชื่ออื่น 
+                        และหลักการเสรีภาพทางศาสนา "สำหรับเจ้ามีศาสนาของเจ้า สำหรับเรามีศาสนาของเรา"
+                    </p>
+                </div>
+            </div>
+
+            <!-- An-Nas -->
+            <div class="surah-card rounded-2xl p-8 text-white shadow-xl fade-in">
+                <div class="text-center mb-8">
+                    <div class="text-6xl mb-4">👥</div>
+                    <h3 class="text-3xl font-bold mb-2">ซูเราะห์ อัน-นาส</h3>
+                    <p class="text-blue-100 text-lg">มนุษย์ • 6 อายะห์</p>
+                    <div class="w-24 h-1 bg-white/30 mx-auto mt-4 rounded-full"></div>
+                    
+                    <!-- Audio Controls -->
+                    <div class="mt-6 bg-white/10 rounded-xl p-4 backdrop-blur-sm">
+                        <h4 class="text-lg font-semibold mb-3 text-yellow-200">🎵 ฟังการอ่าน</h4>
+                        <div class="flex flex-wrap justify-center gap-3">
+                            <button onclick="playAudio('https://server8.mp3quran.net/ahmad_nu/114.mp3')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                🔊 เล่นเสียง
+                            </button>
+                            <a href="https://quran.com/114" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                🌐 Quran.com
+                            </a>
+                            <button onclick="showAudioModal()" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                                📱 แหล่งเสียงอื่น
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            قُلْ أَعُوذُ بِرَبِّ النَّاسِ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 1</div>
+                        <div class="text-white">จงกล่าวเถิด ข้าขอความคุ้มครองจากพระเจ้าแห่งมนุษย์</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            مَلِكِ النَّاسِ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 2</div>
+                        <div class="text-white">ผู้ทรงเป็นกษัตริย์ของมนุษย์</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            إِلَٰهِ النَّاسِ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 3</div>
+                        <div class="text-white">ผู้ทรงเป็นพระเจ้าของมนุษย์</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 4</div>
+                        <div class="text-white">จากความชั่วร้ายของผู้กระซิบที่หลบซ่อน</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 5</div>
+                        <div class="text-white">ผู้ที่กระซิบในอกของมนุษย์</div>
+                    </div>
+                    
+                    <div class="verse-line p-4 rounded-lg bg-white/10 backdrop-blur-sm">
+                        <div class="arabic-font text-right text-2xl mb-3 leading-relaxed">
+                            مِنَ الْجِنَّةِ وَالنَّاسِ
+                        </div>
+                        <div class="text-blue-100 text-sm mb-2">อายะห์ที่ 6</div>
+                        <div class="text-white">จากหมู่ญิน และมนุษย์</div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-6 bg-white/10 rounded-xl backdrop-blur-sm">
+                    <h4 class="text-xl font-semibold mb-3 text-yellow-200">💡 ความสำคัญ</h4>
+                    <p class="text-blue-100 leading-relaxed">
+                        ขอความคุ้มครองจากการกระซิบของปีศาจ ทั้งจากญินและมนุษย์ 
+                        ที่พยายามชักนำให้ทำความผิด เป็นซูเราะห์สุดท้ายของอัลกุรอาน
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary Section -->
+        <section class="mt-16 max-w-4xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-xl p-8 fade-in">
+                <div class="text-center mb-8">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-4">📚 สรุปการเรียนรู้</h3>
+                    <div class="w-24 h-1 bg-indigo-500 mx-auto rounded-full"></div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="text-2xl">🕌</div>
+                            <div>
+                                <h4 class="font-semibold text-lg text-gray-800">อัล-ฟาตีฮะห์</h4>
+                                <p class="text-gray-600">บทเปิด - ซูเราะห์สำคัญที่สุด ต้องอ่านในละหมาด</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="text-2xl">✨</div>
+                            <div>
+                                <h4 class="font-semibold text-lg text-gray-800">อัล-อิคลาศ</h4>
+                                <p class="text-gray-600">ความบริสุทธิ์ - เกี่ยวกับความเป็นหนึ่งเดียวของอัลลอฮ์</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="text-2xl">🚫</div>
+                            <div>
+                                <h4 class="font-semibold text-lg text-gray-800">อัล-กะเฟิรูน</h4>
+                                <p class="text-gray-600">ผู้ปฏิเสธศรัทธา - เสรีภาพทางศาสนา</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="text-2xl">🌅</div>
+                            <div>
+                                <h4 class="font-semibold text-lg text-gray-800">อัล-ฟะลัก</h4>
+                                <p class="text-gray-600">รุ่งอรุณ - ขอความคุ้มครองจากความชั่วร้าย</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="text-2xl">👥</div>
+                            <div>
+                                <h4 class="font-semibold text-lg text-gray-800">อัน-นาส</h4>
+                                <p class="text-gray-600">มนุษย์ - ขอความคุ้มครองจากการกระซิบของปีศาจ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+            </div>
+        </section>
+        </div>
+
+        <!-- Game Page -->
+        <div id="gamePage" class="page-content hidden">
+            <!-- Game Header -->
+            <section class="text-center mb-12 fade-in">
+                <h2 class="text-5xl font-bold text-gray-800 mb-6">🎮 เกมทายซูเราะห์</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    ทดสอบความรู้ของคุณเกี่ยวกับซูเราะห์ในอัลกุรอาน ดูข้อความภาษาไทยแล้วเลือกซูเราะห์ที่ถูกต้อง
+                </p>
+            </section>
+
+            <!-- Game Stats -->
+            <div class="max-w-4xl mx-auto mb-8">
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div class="grid grid-cols-3 gap-6 text-center">
+                        <div class="bg-green-50 rounded-xl p-4">
+                            <div class="text-3xl font-bold text-green-600" id="correctScore">0</div>
+                            <div class="text-green-700 font-medium">ถูก</div>
+                        </div>
+                        <div class="bg-red-50 rounded-xl p-4">
+                            <div class="text-3xl font-bold text-red-600" id="wrongScore">0</div>
+                            <div class="text-red-700 font-medium">ผิด</div>
+                        </div>
+                        <div class="bg-blue-50 rounded-xl p-4">
+                            <div class="text-3xl font-bold text-blue-600" id="totalScore">0</div>
+                            <div class="text-blue-700 font-medium">รวม</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Area -->
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+                    <!-- Question -->
+                    <div class="text-center mb-8">
+                        <div class="text-6xl mb-6" id="questionEmoji">🤔</div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">ข้อความนี้มาจากซูเราะห์ใด?</h3>
+                        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-6">
+                            <p class="text-xl text-gray-800 leading-relaxed" id="questionText">
+                                กำลังโหลดคำถาม...
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Answer Options -->
+                    <div class="grid md:grid-cols-2 gap-4" id="answerOptions">
+                        <!-- Options will be generated by JavaScript -->
+                    </div>
+
+                    <!-- Next Button -->
+                    <div class="text-center mt-8">
+                        <button onclick="nextQuestion()" id="nextBtn" class="bg-indigo-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            ข้อถัดไป →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Result Message -->
+                <div id="resultMessage" class="text-center mb-8 hidden">
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <div class="text-6xl mb-4" id="resultEmoji">🎉</div>
+                        <h3 class="text-2xl font-bold mb-2" id="resultTitle">ยอดเยี่ยม!</h3>
+                        <p class="text-gray-600" id="resultText">คำตอบที่ถูกต้องคือ...</p>
+                    </div>
+                </div>
+
+                <!-- Reset Game -->
+                <div class="text-center">
+                    <button onclick="resetGame()" class="bg-gray-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-700 transition-colors">
+                        🔄 เริ่มเกมใหม่
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 mt-16">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <div class="text-4xl mb-4">📖</div>
+            <h3 class="text-2xl font-bold mb-4">แอปสอนอัลกุรอาน</h3>
+            <p class="text-gray-300 mb-6">เรียนรู้อัลกุรอานด้วยความเข้าใจที่ลึกซึ้ง</p>
+            <div class="text-sm text-gray-400">
+                สร้างด้วยความตั้งใจเพื่อการศึกษาและเผยแพร่ความรู้
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Audio Functions
+        let currentAudio = null;
+
+        function playAudio(url) {
+            // Stop current audio if playing
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+
+            // Create new audio element
+            currentAudio = new Audio(url);
+            
+            // Play audio with error handling
+            currentAudio.play().catch(error => {
+                console.log('Audio playback failed:', error);
+                alert('ไม่สามารถเล่นเสียงได้ในขณะนี้ กรุณาลองใช้ลิงก์ Quran.com แทน');
+            });
+
+            // Optional: Add loading indicator
+            currentAudio.addEventListener('loadstart', () => {
+                console.log('Loading audio...');
+            });
+
+            currentAudio.addEventListener('canplay', () => {
+                console.log('Audio ready to play');
+            });
+        }
+
+        function showAudioModal() {
+            document.getElementById('audioModal').classList.remove('hidden');
+        }
+
+        function closeAudioModal() {
+            document.getElementById('audioModal').classList.add('hidden');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('audioModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAudioModal();
+            }
+        });
+
+        // Page Navigation
+        function showPage(page) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            
+            // Show selected page
+            document.getElementById(page + 'Page').classList.remove('hidden');
+            
+            // Update navigation buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            
+            if (page === 'learn') {
+                document.getElementById('learnBtn').classList.remove('bg-gray-200', 'text-gray-700');
+                document.getElementById('learnBtn').classList.add('bg-indigo-600', 'text-white');
+            } else if (page === 'game') {
+                document.getElementById('gameBtn').classList.remove('bg-gray-200', 'text-gray-700');
+                document.getElementById('gameBtn').classList.add('bg-indigo-600', 'text-white');
+                initGame();
+            }
+        }
+
+        // Game Data
+        const gameQuestions = [
+            {
+                text: "ด้วยพระนามของอัลลอฮ์ ผู้ทรงเมตตา ผู้ทรงกรุณา",
+                correct: "อัล-ฟาตีฮะห์",
+                emoji: "🕌"
+            },
+            {
+                text: "จงกล่าวเถิด พระองค์คืออัลลอฮ์ ผู้ทรงเป็นหนึ่งเดียว",
+                correct: "อัล-อิคลาศ",
+                emoji: "✨"
+            },
+            {
+                text: "จงกล่าวเถิด ข้าขอความคุ้มครองจากพระเจ้าแห่งรุ่งอรุณ",
+                correct: "อัล-ฟะลัก",
+                emoji: "🌅"
+            },
+            {
+                text: "จงกล่าวเถิด โอ้บรรดาผู้ปฏิเสธศรัทธา",
+                correct: "อัล-กะเฟิรูน",
+                emoji: "🚫"
+            },
+            {
+                text: "จงกล่าวเถิด ข้าขอความคุ้มครองจากพระเจ้าแห่งมนุษย์",
+                correct: "อัน-นาส",
+                emoji: "👥"
+            },
+            {
+                text: "การสรรเสริญทั้งปวงเป็นของอัลลอฮ์ ผู้เป็นพระเจ้าแห่งสากลโลก",
+                correct: "อัล-ฟาตีฮะห์",
+                emoji: "🕌"
+            },
+            {
+                text: "สำหรับพวกเจ้ามีศาสนาของพวกเจ้า และสำหรับข้ามีศาสนาของข้า",
+                correct: "อัล-กะเฟิรูน",
+                emoji: "🚫"
+            },
+            {
+                text: "และไม่มีผู้ใดเป็นเทียบเท่ากับพระองค์",
+                correct: "อัล-อิคลาศ",
+                emoji: "✨"
+            },
+            {
+                text: "จากความชั่วร้ายของผู้กระซิบที่หลบซ่อน",
+                correct: "อัน-นาส",
+                emoji: "👥"
+            },
+            {
+                text: "และจากความชั่วร้ายของผู้อิจฉาเมื่อเขาอิจฉา",
+                correct: "อัล-ฟะลัก",
+                emoji: "🌅"
+            }
+        ];
+
+        const surahOptions = ["อัล-ฟาตีฮะห์", "อัล-อิคลาศ", "อัล-ฟะลัก", "อัล-กะเฟิรูน", "อัน-นาส"];
+
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let selectedAnswer = null;
+
+        // Game Functions
+        function initGame() {
+            currentQuestion = 0;
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            selectedAnswer = null;
+            updateScores();
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestion >= gameQuestions.length) {
+                showFinalResult();
+                return;
+            }
+
+            const question = gameQuestions[currentQuestion];
+            document.getElementById('questionText').textContent = question.text;
+            document.getElementById('questionEmoji').textContent = question.emoji;
+            
+            // Hide result message
+            document.getElementById('resultMessage').classList.add('hidden');
+            
+            // Generate answer options
+            const optionsContainer = document.getElementById('answerOptions');
+            optionsContainer.innerHTML = '';
+            
+            // Create shuffled options
+            const options = [...surahOptions];
+            shuffleArray(options);
+            
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'answer-option bg-gray-50 hover:bg-gray-100 border-2 border-gray-200 rounded-xl p-4 text-left transition-all duration-200 hover:border-indigo-300';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(option, button);
+                optionsContainer.appendChild(button);
+            });
+            
+            // Reset next button
+            document.getElementById('nextBtn').disabled = true;
+            selectedAnswer = null;
+        }
+
+        function selectAnswer(answer, buttonElement) {
+            // Remove previous selections
+            document.querySelectorAll('.answer-option').forEach(btn => {
+                btn.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                btn.classList.add('border-gray-200', 'bg-gray-50');
+            });
+            
+            selectedAnswer = answer;
+            const question = gameQuestions[currentQuestion];
+            const isCorrect = answer === question.correct;
+            
+            if (isCorrect) {
+                buttonElement.classList.remove('border-gray-200', 'bg-gray-50');
+                buttonElement.classList.add('border-green-500', 'bg-green-50');
+                correctAnswers++;
+                showResult(true, question.correct);
+            } else {
+                buttonElement.classList.remove('border-gray-200', 'bg-gray-50');
+                buttonElement.classList.add('border-red-500', 'bg-red-50');
+                wrongAnswers++;
+                
+                // Highlight correct answer
+                document.querySelectorAll('.answer-option').forEach(btn => {
+                    if (btn.textContent === question.correct) {
+                        btn.classList.remove('border-gray-200', 'bg-gray-50');
+                        btn.classList.add('border-green-500', 'bg-green-50');
+                    }
+                });
+                
+                showResult(false, question.correct);
+            }
+            
+            updateScores();
+            document.getElementById('nextBtn').disabled = false;
+            
+            // Disable all options after selection
+            document.querySelectorAll('.answer-option').forEach(btn => {
+                btn.onclick = null;
+                btn.classList.add('cursor-not-allowed');
+            });
+        }
+
+        function showResult(isCorrect, correctAnswer) {
+            const resultMessage = document.getElementById('resultMessage');
+            const resultEmoji = document.getElementById('resultEmoji');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultText = document.getElementById('resultText');
+            
+            if (isCorrect) {
+                resultEmoji.textContent = '🎉';
+                resultTitle.textContent = 'ถูกต้อง!';
+                resultTitle.className = 'text-2xl font-bold mb-2 text-green-600';
+                resultText.textContent = 'ยอดเยี่ยม! คุณตอบถูกแล้ว';
+            } else {
+                resultEmoji.textContent = '😅';
+                resultTitle.textContent = 'ผิดแล้ว!';
+                resultTitle.className = 'text-2xl font-bold mb-2 text-red-600';
+                resultText.textContent = `คำตอบที่ถูกต้องคือ "${correctAnswer}"`;
+            }
+            
+            resultMessage.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            showQuestion();
+        }
+
+        function showFinalResult() {
+            const total = correctAnswers + wrongAnswers;
+            const percentage = Math.round((correctAnswers / total) * 100);
+            
+            document.getElementById('questionText').textContent = `เกมจบแล้ว! คุณตอบถูก ${correctAnswers} จาก ${total} ข้อ (${percentage}%)`;
+            document.getElementById('questionEmoji').textContent = percentage >= 80 ? '🏆' : percentage >= 60 ? '👏' : '💪';
+            document.getElementById('answerOptions').innerHTML = '';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            const resultMessage = document.getElementById('resultMessage');
+            const resultEmoji = document.getElementById('resultEmoji');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultText = document.getElementById('resultText');
+            
+            if (percentage >= 80) {
+                resultEmoji.textContent = '🏆';
+                resultTitle.textContent = 'ยอดเยี่ยม!';
+                resultTitle.className = 'text-2xl font-bold mb-2 text-yellow-600';
+                resultText.textContent = 'คุณมีความรู้เกี่ยวกับอัลกุรอานเป็นอย่างดี!';
+            } else if (percentage >= 60) {
+                resultEmoji.textContent = '👏';
+                resultTitle.textContent = 'ดีมาก!';
+                resultTitle.className = 'text-2xl font-bold mb-2 text-green-600';
+                resultText.textContent = 'คุณมีพื้นฐานที่ดี ลองเล่นอีกครั้งเพื่อพัฒนาต่อ';
+            } else {
+                resultEmoji.textContent = '💪';
+                resultTitle.textContent = 'ลองใหม่อีกครั้ง!';
+                resultTitle.className = 'text-2xl font-bold mb-2 text-blue-600';
+                resultText.textContent = 'อ่านซูเราะห์ในหน้าเรียนรู้แล้วมาลองเล่นใหม่นะ';
+            }
+            
+            resultMessage.classList.remove('hidden');
+        }
+
+        function resetGame() {
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            initGame();
+        }
+
+        function updateScores() {
+            document.getElementById('correctScore').textContent = correctAnswers;
+            document.getElementById('wrongScore').textContent = wrongAnswers;
+            document.getElementById('totalScore').textContent = correctAnswers + wrongAnswers;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Add scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards
+        document.querySelectorAll('.surah-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Add hover effects for verse lines
+        document.querySelectorAll('.verse-line').forEach(line => {
+            line.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(10px)';
+            });
+            
+            line.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('learn'); // Show learning page by default
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97cb4b43c1342db0',t:'MTc1NzQ2OTIzMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
